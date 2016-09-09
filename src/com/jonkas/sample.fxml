@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<BorderPane prefHeight="134.0" prefWidth="282.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jonkas.Controller">
+   <bottom>
+      <HBox alignment="TOP_CENTER" prefHeight="35.0" prefWidth="224.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="button_plus" mnemonicParsing="false" onAction="#onButton_plus" />
+            <Button fx:id="button_minus" mnemonicParsing="false" onAction="#onButton_minus" />
+            <Button fx:id="button_multiplie" mnemonicParsing="false" onAction="#onButton_multiplie" />
+            <Button fx:id="button_divide" mnemonicParsing="false" onAction="#onButton_divide" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </HBox>
+   </bottom>
+   <center>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="label_task" alignment="CENTER" lineSpacing="1.0" prefHeight="35.0" prefWidth="265.0" text="845 ? 1 = 846" textAlignment="CENTER">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Button fx:id="button_restart" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#restartGame" prefHeight="25.0" prefWidth="114.0" text="Restart" textAlignment="CENTER" visible="false" />
+         </children>
+      </VBox>
+   </center>
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu fx:id="menu_settings" mnemonicParsing="false" text="Einstellungen" />
+              </menus>
+            </MenuBar>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label fx:id="label_timer" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="189.0" text="Time: 30" />
+                  <Label fx:id="label_score" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="89.0" text="Score: 0 ">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+</BorderPane>
