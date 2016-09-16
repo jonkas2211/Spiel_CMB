@@ -1,6 +1,9 @@
 package com.jonkas;
 
+import com.sun.javaws.jnl.JavaFXRuntimeDesc;
 import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -13,6 +16,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 
 //ToDo: ToDO countdown
@@ -39,7 +43,7 @@ public class Controller implements Initializable{
 
     private int score = 0;
 
-    private int countDownTime;
+    volatile private int countDownTime;
 
     private enum TASK{
         PLUS,
@@ -147,18 +151,45 @@ public class Controller implements Initializable{
 
     }
 
-    private void countDownTimer(int countDownTime){
-        this.countDownTime = countDownTime;
-        long startTime = System.currentTimeMillis();
-        while(this.countDownTime>0 ){
-            if(System.currentTimeMillis()-startTime>=1000) {
-                startTime = System.currentTimeMillis();
-                this.countDownTime--;
-                label_timer.setText("Time: " + this.countDownTime);
-                System.out.println((this.countDownTime - (System.currentTimeMillis() - startTime)));
-            }
-        }
+    private void countDownTimer(int time){
 
+        Service<Void> service = new Service<Void>() {
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        //Background work
+
+                        countDownTime = time;
+                        long startTime = System.currentTimeMillis();
+                        while(countDownTime>0 ){
+                            if(System.currentTimeMillis()-startTime>=1000) {
+                                startTime = System.currentTimeMillis();
+                                countDownTime--;
+                                System.out.println((countDownTime - (System.currentTimeMillis() - startTime)));
+                            }
+                        }
+                        final CountDownLatch latch = new CountDownLatch(1);
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    //FX Stuff done here
+                                    label_timer.setText("Time: " + countDownTime);
+                                }finally{
+                                    latch.countDown();
+                                }
+                            }
+                        });
+                        latch.await();
+                        //Keep with the background work
+                        return null;
+                    }
+                };
+            }
+        };
+        service.start();
     }
 
     public void onButton_plus(){
