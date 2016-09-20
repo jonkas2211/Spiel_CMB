@@ -95,7 +95,7 @@ public class Controller implements Initializable{
         }else{
             System.out.println("Falsch");
             label_score.setText("Score: "+score);
-            restartGame();
+            countDownTime-=3;
         }
     }
 
@@ -152,44 +152,41 @@ public class Controller implements Initializable{
     }
 
     private void countDownTimer(int time){
+        countDownTime = time;
 
-        Service<Void> service = new Service<Void>() {
+//ToDo: Macht noch Probleme
+        Thread thread = new Thread(new Runnable() {
+            volatile long startTime = System.currentTimeMillis();
             @Override
-            protected Task<Void> createTask() {
-                return new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        //Background work
+            public void run() {
 
-                        countDownTime = time;
-                        long startTime = System.currentTimeMillis();
-                        while(countDownTime>0 ){
-                            if(System.currentTimeMillis()-startTime>=1000) {
-                                startTime = System.currentTimeMillis();
-                                countDownTime--;
-                                System.out.println((countDownTime - (System.currentTimeMillis() - startTime)));
-                            }
-                        }
-                        final CountDownLatch latch = new CountDownLatch(1);
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                try{
-                                    //FX Stuff done here
-                                    label_timer.setText("Time: " + countDownTime);
-                                }finally{
-                                    latch.countDown();
-                                }
-                            }
+                while(countDownTime>0 ){
+                    if(System.currentTimeMillis()-startTime>=1000) {
+                        startTime = System.currentTimeMillis();
+                        countDownTime--;
+                        System.out.println(countDownTime);
+
+                        Platform.runLater(() -> {
+                            //if you change the UI, do it here !
+                            label_timer.setText("Time: " + countDownTime);
                         });
-                        latch.await();
-                        //Keep with the background work
-                        return null;
                     }
-                };
+                }
+                gameOver();
+
             }
-        };
-        service.start();
+        });
+        thread.start();
+
+    }
+
+    private void gameOver(){
+        button_restart.setVisible(true);
+        button_plus.setDisable(true);
+        button_minus.setDisable(true);
+        button_multiplie.setDisable(true);
+        button_divide.setDisable(true);
+        score=0;
     }
 
     public void onButton_plus(){
